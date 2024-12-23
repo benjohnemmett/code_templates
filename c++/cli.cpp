@@ -17,7 +17,6 @@ class CommandLineIo {
     std::thread m_command_line_listen_thread;
 };
 
-
 void CommandLineIo::Start() {
     m_is_listening = true;
     std::cout << "Listening for input..." << std::endl;
@@ -32,7 +31,15 @@ void CommandLineIo::Stop() {
 void CommandLineIo::ListenFunction() {
     while (m_is_listening) {
         std::string input;
-        std::getline(std::cin, input);
+
+        if (std::cin.peek() != std::istream::traits_type::eof())
+        {
+            std::getline(std::cin, input);
+        }
+        else 
+        {
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
 
         if (input.size() == 0) {
             continue;
@@ -44,7 +51,6 @@ void CommandLineIo::ListenFunction() {
         } else {
             std::cout << "You typed " << input.size() << " characters." << std::endl;
         }
-
     }
 }
 
